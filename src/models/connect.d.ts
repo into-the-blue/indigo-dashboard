@@ -1,12 +1,13 @@
-import { AnyAction } from 'redux';
+import { AnyAction, Dispatch } from 'redux';
 import { MenuDataItem } from '@ant-design/pro-layout';
 import { RouterTypes } from 'umi';
 import { GlobalModelState } from './global';
 import { DefaultSettings as SettingModelState } from '../../config/defaultSettings';
 import { UserModelState } from './user';
 import { StateType } from './login';
+import { TaggingState } from './tagging';
 
-export { GlobalModelState, SettingModelState, UserModelState };
+export { GlobalModelState, SettingModelState, UserModelState, TaggingState };
 
 export interface Loading {
   global: boolean;
@@ -26,6 +27,7 @@ export interface ConnectState {
   settings: SettingModelState;
   user: UserModelState;
   login: StateType;
+  tagging: TaggingState;
 }
 
 export interface Route extends MenuDataItem {
@@ -37,4 +39,5 @@ export interface Route extends MenuDataItem {
  */
 export interface ConnectProps<T = {}> extends Partial<RouterTypes<Route, T>> {
   dispatch?: Dispatch<AnyAction>;
+  next?: (type: string, payload?: any = {}) => Dispatch<AnyAction>;
 }

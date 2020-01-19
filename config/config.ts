@@ -97,6 +97,12 @@ export default {
           authority: ['admin', 'user'],
           routes: [
             {
+              name: 'Tagging',
+              path: '/tagging',
+              icon: 'smile',
+              component: './imageTagging/imageTagging.viewModel',
+            },
+            {
               path: '/',
               redirect: '/welcome',
             },
@@ -176,11 +182,11 @@ export default {
     basePath: '/',
   },
   // chainWebpack: webpackPlugin,
-  // proxy: {
-  //   '/server/api/': {
-  //     target: 'https://preview.pro.ant.design/',
-  //     changeOrigin: true,
-  //     pathRewrite: { '^/server': '' },
-  //   },
-  // },
+  proxy: {
+    '/dashboard': {
+      target: 'http://localhost:7000',
+      changeOrigin: true,
+      // pathRewrite: { '^/server': '' },
+    },
+  },
 } as IConfig;
