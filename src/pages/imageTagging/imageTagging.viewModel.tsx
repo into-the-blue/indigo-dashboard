@@ -3,7 +3,7 @@ import { Button, Spin } from 'antd';
 import { IProps } from './types';
 import { ImageTaggingPresenter } from './imageTagging.presenter';
 import { connect_ } from '@/utils';
-
+import './index.scss';
 class Tagging extends React.PureComponent<IProps> {
   presenter: ImageTaggingPresenter;
 
@@ -30,6 +30,10 @@ class Tagging extends React.PureComponent<IProps> {
       <div>
         <Button>{'Search'}</Button>
         <Spin spinning={!!loading.effects['tagging/queryUntaggedApartments']} />
+
+        <div>{tagging.untaggedApartments.length}</div>
+
+        <div style={{ width: 1500, height: 800 }} id={'bdMap-container'}></div>
       </div>
     );
   }

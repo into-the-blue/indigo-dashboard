@@ -59,3 +59,5 @@ export const getRouteAuthority = (path: string, routeData: Route[]) => {
   });
   return authorities;
 };
+
+export const sleep = (time: number = 0) => new Promise(resolve => setTimeout(resolve, time));

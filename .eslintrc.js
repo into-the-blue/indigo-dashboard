@@ -19,5 +19,6 @@ module.exports = {
     'no-useless-return': 'off',
     eqeqeq: 'off',
     'no-useless-constructor': 'off',
+    'eslint-comments/no-unlimited-disable': 'off',
   },
 };

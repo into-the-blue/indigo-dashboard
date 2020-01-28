@@ -2,7 +2,6 @@ import { IConfig, IPlugin } from 'umi-types';
 import defaultSettings from './defaultSettings'; // https://umijs.org/config/
 import slash from 'slash2';
 import themePluginConfig from './themePluginConfig';
-
 const { pwa } = defaultSettings;
 
 // preview.pro.ant.design only do not use in your production ;
@@ -55,6 +54,7 @@ const plugins: IPlugin[] = [
       autoAddMenu: true,
     },
   ],
+  ['./config/aMap.plugin.js', {}],
 ];
 
 if (isAntDesignProPreview) {
