@@ -1,6 +1,6 @@
 /* eslint-disable */
 import MarkerImg from '@/assets/marker.png';
-import HouseImg from '@/assets/house.png';
+import HouseImg from '../../assets/house.png';
 
 // 上海的经纬度是东经120°52′-122°12′，北纬30°40′-31°53′之间。
 // export class BDMap {
@@ -65,6 +65,21 @@ import HouseImg from '@/assets/house.png';
 //   };
 // }
 
+const metroIconPath = (city: string) => {
+  return require(`@/assets/${city.toLowerCase()}_metro.png`);
+};
+
+const mapMarkerIcon = (type: 'house' | 'metro' | 'point') => {
+  switch (type) {
+    case 'house':
+      return HouseImg;
+    case 'metro':
+      return metroIconPath('shanghai');
+    case 'point':
+      return MarkerImg;
+  }
+};
+
 export class AAMap {
   elmId: string;
 
@@ -78,7 +93,7 @@ export class AAMap {
     // this.map.setCurrentCity('上海');
   }
 
-  moveTo = (lng: number, lat: number, scale: number = 15) => {
+  moveTo = (lng: number, lat: number, scale?: number) => {
     this.map.setZoomAndCenter(scale, [lng, lat]);
   };
 
@@ -125,7 +140,7 @@ export class AAMap {
     addtionalProps?: any,
   ) => {
     const marker = new AMap.Marker({
-      icon: HouseImg,
+      icon: mapMarkerIcon(markerType),
       position: [lng, lat],
       offset: new AMap.Pixel(-12.5, -25),
       size: new AMap.Size(25, 25),

@@ -2,8 +2,7 @@ import { ImageTaggingViewModel } from './types';
 import { gqlClient } from '@/utils';
 import { gql } from 'apollo-boost';
 import { AAMap } from './mapController';
-import { sleep } from '@/utils/utils';
-import TaggingState from '@/models/tagging';
+import {} from '@/utils/utils';
 import { IApartment } from '@/types';
 // import { useQuery } from '@apollo/react-hooks';
 
@@ -53,7 +52,8 @@ class ImageTaggingPresenter {
   };
 
   onPressMarker = (apartment: IApartment) => {
-    console.warn(apartment);
+    // console.warn(apartment);
+    this.map!.moveTo(apartment.lng, apartment.lat, 13);
   };
 }
 
