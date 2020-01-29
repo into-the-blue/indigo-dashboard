@@ -6,8 +6,9 @@ import { DefaultSettings as SettingModelState } from '../../config/defaultSettin
 import { UserModelState } from './user';
 import { StateType } from './login';
 import { TaggingState } from './tagging';
+import { MapState } from './map';
 
-export { GlobalModelState, SettingModelState, UserModelState, TaggingState };
+export { GlobalModelState, SettingModelState, UserModelState, TaggingState, MapState };
 
 export interface Loading {
   global: boolean;
@@ -28,6 +29,7 @@ export interface ConnectState {
   user: UserModelState;
   login: StateType;
   tagging: TaggingState;
+  map: MapState;
 }
 
 export interface Route extends MenuDataItem {

@@ -20,5 +20,6 @@ module.exports = {
     eqeqeq: 'off',
     'no-useless-constructor': 'off',
     'eslint-comments/no-unlimited-disable': 'off',
+    'no-param-reassign':'off'
   },
 };

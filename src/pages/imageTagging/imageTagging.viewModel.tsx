@@ -1,14 +1,20 @@
 import React from 'react';
-import { Button, Spin } from 'antd';
-import { IProps } from './types';
+import { Button, Spin, Row, Col } from 'antd';
+import { IProps, IState } from './types';
 import { ImageTaggingPresenter } from './imageTagging.presenter';
 import { connect_ } from '@/utils';
+import { IMap } from '@/components/Map';
+import { Rnd } from 'react-rnd';
 import './index.scss';
-class Tagging extends React.PureComponent<IProps> {
+class Tagging extends React.PureComponent<IProps, IState> {
   presenter: ImageTaggingPresenter;
 
   constructor(props: IProps) {
     super(props);
+    this.state = {
+      width: 500,
+      height: 300,
+    };
     this.presenter = new ImageTaggingPresenter(this);
   }
 
@@ -32,11 +38,29 @@ class Tagging extends React.PureComponent<IProps> {
         <Spin spinning={!!loading.effects['tagging/queryUntaggedApartments']} />
 
         <div>{tagging.untaggedApartments.length}</div>
-
-        <div style={{ width: 1500, height: 800 }} id={'bdMap-container'}></div>
+        <div>
+          <Rnd
+            size={{ width: this.state.width, height: this.state.height }}
+            // position={{ x: this.state.x, y: this.state.y }}
+            // onDragStop={(e, d) => {
+            //   this.setState({ x: d.x, y: d.y });
+            // }}
+            // lockAspectRatio
+            disableDragging
+            onResizeStop={(e, direction, ref, delta, position) => {
+              this.setState({
+                width: +ref.style.width,
+                height: +ref.style.height,
+                // ...position,
+              });
+            }}
+          >
+            <IMap />
+          </Rnd>
+        </div>
       </div>
     );
   }
 }
 
-export default connect_('loading', 'tagging')(Tagging);
+export default connect_('loading', 'tagging', 'map')(Tagging);

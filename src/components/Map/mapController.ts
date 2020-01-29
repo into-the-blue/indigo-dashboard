@@ -1,6 +1,6 @@
 /* eslint-disable */
 import MarkerImg from '@/assets/marker.png';
-import HouseImg from '../../assets/house.png';
+import HouseImg from '@/assets/house.png';
 
 // 上海的经纬度是东经120°52′-122°12′，北纬30°40′-31°53′之间。
 // export class BDMap {
@@ -151,6 +151,7 @@ export class AAMap {
     this.map.add(marker);
     return marker;
   };
+  removeMarker = (marker: any) => this.map.remove(marker);
 
   getAllMarkers = () => this.map.getAllOverlays('marker');
 
