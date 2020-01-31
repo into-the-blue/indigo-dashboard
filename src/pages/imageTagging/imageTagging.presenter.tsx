@@ -54,7 +54,7 @@ class ImageTaggingPresenter {
   };
 
   onPressApartmentMarker = (apartment: IApartment) => {
-    message.info(apartment.title, apartment.price);
+    message.info(apartment.title + apartment.price);
     console.warn(apartment);
   };
 
