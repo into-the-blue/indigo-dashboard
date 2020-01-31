@@ -1,11 +1,16 @@
 import { Reducer } from 'redux';
 import { Effect } from 'dva';
 import {} from '@/utils';
-import { IApartment } from '@/types';
+import { IApartment, IMetroStationClient } from '@/types';
 import { ConnectState } from './connect.d';
 
 export interface MapState {
-  markers: { apartment: IApartment; marker: any }[];
+  markers: {
+    apartment?: IApartment;
+    marker: any;
+    type: 'apartment' | 'station';
+    station?: IMetroStationClient;
+  }[];
 }
 
 export interface TempalteModel {
@@ -33,7 +38,8 @@ const Model: TempalteModel = {
       const nextMarkers = [
         ...oMarkers,
         ...markers.filter(
-          ({ apartment }: any) => !oMarkers.some((o: any) => o.apartment.id === apartment.id),
+          (o1: any) =>
+            !oMarkers.some((o: any) => o.type === o1.type && o[o1.type].id === o1[o1.type].id),
         ),
       ];
 
@@ -45,21 +51,14 @@ const Model: TempalteModel = {
       });
     },
 
-    *removeMarkers({ payload: { apartment } }, { select, put }) {
-      if (apartment.length === 0) {
-        return yield put({
-          type: 'setState',
-          payload: {
-            markers: [],
-          },
-        });
-      }
-      const { markers } = yield select((state: ConnectState) => state.map);
+    *removeMarkers({ payload: { markers } }, { select, put }) {
+      const { markers: oMarkers } = yield select((state: ConnectState) => state.map);
       yield put({
         type: 'setState',
         payload: {
-          markers: markers.filter(
-            (m: any) => !apartment.some((a: any) => a.apartment.id === m.apartment.id),
+          markers: oMarkers.filter(
+            (m: any) =>
+              !markers.some((m2: any) => m2.type === m.type && m[m2.type].id === m2[m2.type].id),
           ),
         },
       });

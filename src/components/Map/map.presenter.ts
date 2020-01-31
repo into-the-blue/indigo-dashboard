@@ -3,7 +3,7 @@ import {} from '@/utils';
 import {} from 'apollo-boost';
 import { AAMap } from './mapController';
 import { safelyCall } from '@/utils/utils';
-import { IApartment } from '@/types';
+import { IApartment, IMetroStationClient } from '@/types';
 import { next, XENO_EVENT, on } from '@/utils/xeno';
 import {} from 'antd';
 
@@ -46,39 +46,124 @@ class MapPresenter {
     };
   };
 
-  cleanMarker = ({ apartment }: { apartment: IApartment | IApartment[] }) => {
-    if (!Array.isArray(apartment)) apartment = [apartment];
-    const { markers } = this.viewModel.getProps.map;
-    let markersToRm: any[];
-    if (apartment.length === 0) {
-      markersToRm = markers.map(o => o.marker);
-    } else {
-      markersToRm = apartment.map(a => markers.find(o => o.apartment.id === a.id)).filter(o => !!o);
+  cleanMarker = ({
+    apartment,
+    type,
+    station,
+  }: {
+    apartment?: IApartment | IApartment[];
+    type: 'station' | 'apartment';
+    station?: IMetroStationClient | IMetroStationClient[];
+  }) => {
+    if (type === 'apartment') {
+      if (!Array.isArray(apartment)) apartment = [apartment!];
+      const { markers } = this.viewModel.getProps.map;
+      let markersToRm: any[];
+      if (apartment!.length === 0) {
+        markersToRm = markers.filter(o => o.type === 'apartment');
+      } else {
+        markersToRm = apartment
+          .map(a => markers.find(o => o.apartment!.id === a.id))
+          .filter(o => !!o);
+      }
+      markersToRm.map(o => o.marker).forEach(this.map!.removeMarker);
+      this.viewModel.getProps.next!('map/removeMarkers', {
+        markers: markersToRm,
+      });
     }
-    markersToRm.forEach(this.map!.removeMarker);
+    if (type === 'station') {
+      if (!Array.isArray(station)) station = [station!];
+      const { markers } = this.viewModel.getProps.map;
+      let markersToRm: any[];
+      if (station!.length === 0) {
+        markersToRm = markers.filter(o => o.type === 'station');
+      } else {
+        markersToRm = station.map(a => markers.find(o => o.station!.id === a.id)).filter(o => !!o);
+      }
+      markersToRm.map(o => o.marker).forEach(this.map!.removeMarker);
+      this.viewModel.getProps.next!('map/removeMarkers', {
+        markers: markersToRm,
+      });
+    }
   };
 
-  AddMarker = ({ apartment }: { apartment: IApartment | IApartment[] }) => {
-    if (!Array.isArray(apartment)) apartment = [apartment];
-    const markers = apartment.map(apt => {
-      return {
-        marker: this.map?.addMarker(apt.lng, apt.lat, () => this.onPressMarker(apt), 'house', {
-          label: { content: `<div id="marker">${apt.price}</div>` },
-        }),
-        apartment: apt,
-      };
-    });
-    this.viewModel.getProps.next!('map/addNewMarkers', {
-      markers,
-    });
+  AddMarker = ({
+    apartment,
+    type,
+    station,
+  }: {
+    apartment?: IApartment | IApartment[];
+    type: 'station' | 'apartment';
+    station?: IMetroStationClient | IMetroStationClient[];
+  }) => {
+    if (type === 'apartment') {
+      if (!Array.isArray(apartment)) apartment = [apartment!];
+      const markers = apartment.map(apt => {
+        return {
+          marker: this.map?.addMarker(
+            apt.lng,
+            apt.lat,
+            () => this.onPressMarker(apt, type),
+            'house',
+            {
+              label: { content: `<div id="marker">${apt.price}</div>` },
+            },
+          ),
+          type,
+          apartment: apt,
+        };
+      });
+      this.viewModel.getProps.next!('map/addNewMarkers', {
+        markers,
+      });
+    }
+
+    if (type === 'station') {
+      if (!Array.isArray(station)) station = [station!];
+      const markers = station.map(v => {
+        return {
+          marker: this.map?.addMarker(
+            v.coordinates[0],
+            v.coordinates[1],
+            () => this.onPressMarker(v, type),
+            'metro',
+            {
+              label: { content: `<div id="marker">${v.stationName}</div>` },
+            },
+          ),
+          type,
+          station: v,
+        };
+      });
+      this.viewModel.getProps.next!('map/addNewMarkers', {
+        markers,
+      });
+    }
   };
 
-  onPressMarker = (apartment: IApartment) => {
-    // console.warn(apartment);
-    this.map!.moveTo(apartment.lng, apartment.lat, 13);
-    next(XENO_EVENT.ON_PRESS_MARKER, {
-      apartment,
-    });
+  onPressMarker: {
+    (value: IApartment, type: 'apartment'): void;
+    (value: IMetroStationClient, type: 'station'): void;
+  } = (value: IApartment | IMetroStationClient, type: 'apartment' | 'station') => {
+    if (type === 'apartment') {
+      this.map!.moveTo((value as IApartment).lng, (value as IApartment).lat);
+      next(XENO_EVENT.ON_PRESS_MARKER, {
+        apartment: value as IApartment,
+        type: 'apartment',
+      });
+    }
+
+    if (type === 'station') {
+      this.map!.moveTo(
+        (value as IMetroStationClient).coordinates[0],
+        (value as IApartment).coordinates[1],
+        // 13,
+      );
+      next(XENO_EVENT.ON_PRESS_MARKER, {
+        station: value as IMetroStationClient,
+        type: 'station',
+      });
+    }
   };
 }
 

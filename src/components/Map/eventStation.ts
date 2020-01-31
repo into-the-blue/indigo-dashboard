@@ -1,4 +1,4 @@
-import { IApartment } from '@/types';
+import { IApartment, IMetroStationClient } from '@/types';
 
 export enum MapEvents {
   ON_PRESS_MARKER = 'ON_PRESS_MARKER',
@@ -6,8 +6,16 @@ export enum MapEvents {
   CLEAN_MARKER = 'CLEAN_MARKER',
 }
 
+type Payload =
+  | { apartment: IApartment | IApartment[]; type: 'apartment' }
+  | { station: IMetroStationClient | IMetroStationClient[]; type: 'station' };
 export interface MapPayloads {
-  [MapEvents.ON_PRESS_MARKER]: { apartment: IApartment };
-  [MapEvents.ADD_MARKER]: { apartment: IApartment | IApartment[] };
-  [MapEvents.CLEAN_MARKER]: { apartment: IApartment | IApartment[] };
+  [MapEvents.ON_PRESS_MARKER]:
+    | {
+        apartment: IApartment;
+        type: 'apartment';
+      }
+    | { type: 'station'; station: IMetroStationClient };
+  [MapEvents.ADD_MARKER]: Payload;
+  [MapEvents.CLEAN_MARKER]: Payload;
 }

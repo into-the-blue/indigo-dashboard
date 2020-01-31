@@ -12,8 +12,8 @@ class Tagging extends React.PureComponent<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
-      width: 500,
-      height: 300,
+      width: 1400,
+      height: 700,
     };
     this.presenter = new ImageTaggingPresenter(this);
   }
@@ -36,8 +36,12 @@ class Tagging extends React.PureComponent<IProps, IState> {
       <div>
         <Button>{'Search'}</Button>
         <Spin spinning={!!loading.effects['tagging/queryUntaggedApartments']} />
-
         <div>{tagging.untaggedApartments.length}</div>
+        <div>
+          <Button type={'primary'} onClick={this.presenter.queryMetroStations}>
+            {'Show Metro Stations'}
+          </Button>
+        </div>
         <div>
           <Rnd
             size={{ width: this.state.width, height: this.state.height }}
@@ -63,4 +67,4 @@ class Tagging extends React.PureComponent<IProps, IState> {
   }
 }
 
-export default connect_('loading', 'tagging', 'map')(Tagging);
+export default connect_('loading', 'tagging', 'map', 'apartment')(Tagging);

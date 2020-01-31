@@ -29,15 +29,6 @@ export const queryUnlabeledApartments = async (limit: number = 50) => {
             floorFullInfo
             fridge
             gas
-            geoInfo {
-              location {
-                lng
-                lat
-              }
-              precise
-              confidence
-              comprehension
-            }
             heating
             houseType
             imgUrls

@@ -7,8 +7,16 @@ import { UserModelState } from './user';
 import { StateType } from './login';
 import { TaggingState } from './tagging';
 import { MapState } from './map';
+import { ApartmentState } from './apartment';
 
-export { GlobalModelState, SettingModelState, UserModelState, TaggingState, MapState };
+export {
+  GlobalModelState,
+  SettingModelState,
+  UserModelState,
+  TaggingState,
+  MapState,
+  ApartmentState,
+};
 
 export interface Loading {
   global: boolean;
@@ -30,6 +38,7 @@ export interface ConnectState {
   login: StateType;
   tagging: TaggingState;
   map: MapState;
+  apartment: ApartmentState;
 }
 
 export interface Route extends MenuDataItem {
