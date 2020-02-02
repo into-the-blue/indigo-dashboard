@@ -1,13 +1,11 @@
 import { ImageTaggingViewModel } from './types';
-import { gqlClient } from '@/utils';
-import { gql } from 'apollo-boost';
+import {} from '@/utils';
+import {} from 'apollo-boost';
 import { safelyCall } from '@/utils/utils';
 import { IApartment, IMetroStationClient } from '@/types';
 import './index.scss';
 import { next, XENO_EVENT, on } from '@/utils/xeno';
-import { tap } from 'rxjs/operators';
 import { message } from 'antd';
-// import { useQuery } from '@apollo/react-hooks';
 
 class ImageTaggingPresenter {
   unlisten?: () => void;
@@ -17,7 +15,7 @@ class ImageTaggingPresenter {
   }
 
   componentDidMount() {
-    this.initializeData();
+    // this.initializeData();
     this.initializeListener();
   }
 
@@ -63,6 +61,15 @@ class ImageTaggingPresenter {
     message.success(station.stationName);
     this.viewModel.getProps.next!('apartment/queryApartmentsNearbyStation', {
       stationId: station.stationId,
+      distance: 1000,
+      limit: 1000,
+    });
+  };
+
+  onSearchAddress = (address: string) => {
+    this.viewModel.getProps.next!('apartment/queryApartmentsNearbyAddress', {
+      address,
+      city: '上海',
       distance: 1000,
       limit: 1000,
     });

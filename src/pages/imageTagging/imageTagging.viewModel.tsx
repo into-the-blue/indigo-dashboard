@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Spin, Row, Col } from 'antd';
+import { Button, Spin, Row, Col, Input } from 'antd';
 import { IProps, IState } from './types';
 import { ImageTaggingPresenter } from './imageTagging.presenter';
 import { connect_ } from '@/utils';
@@ -41,6 +41,7 @@ class Tagging extends React.PureComponent<IProps, IState> {
           <Button type={'primary'} onClick={this.presenter.queryMetroStations}>
             {'Show Metro Stations'}
           </Button>
+          <Input.Search onSearch={this.presenter.onSearchAddress} />
         </div>
         <div>
           <Rnd

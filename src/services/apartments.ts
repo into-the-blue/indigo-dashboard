@@ -1,7 +1,7 @@
 import { gqlClient } from '@/utils';
 import { gql } from 'apollo-boost';
 import { IMetroStationClient, IApartment } from '@/types';
-
+import { apartmentDefaultSchemas } from './helper';
 export const queryAllMetroStations = async (): Promise<IMetroStationClient> => {
   return (
     await gqlClient.query({
@@ -31,48 +31,9 @@ export const queryApartmentsNearbyMetroStation = async (
   return (
     await gqlClient.query({
       query: gql`
-        query($stationId:String, $distance:Int, $limit: Int) {
-          queryApartmentsNearByStation(stationId:$stationId, distance:$distance, limit: $limit) {
-            id
-            houseUrl
-            houseId
-            airCondition
-            area
-            bed
-            bizcircle
-            buildingTotalFloors
-            carport
-            checkInDate
-            city
-            closet
-            communityName
-            communityUrl
-            district
-            electricity
-            elevator
-            floor
-            floorAccessibility
-            floorFullInfo
-            fridge
-            gas
-            heating
-            houseType
-            imgUrls
-            lat
-            lng
-            naturalGas
-            orient
-            price
-            pricePerSquareMeter
-            subwayAccessibility
-            tags
-            washingMachine
-            water
-            waterHeater
-            wifi
-            title
-            createdAt
-            createdTime
+        query($stationId: String, $distance: Int, $limit: Int) {
+          queryApartmentsNearbyStation(stationId: $stationId, distance: $distance, limit: $limit) {
+            ${apartmentDefaultSchemas}
           }
         }
       `,
@@ -82,5 +43,35 @@ export const queryApartmentsNearbyMetroStation = async (
         limit,
       },
     })
-  ).data.queryApartmentsNearByStation;
+  ).data.queryApartmentsNearbyStation;
+};
+
+export const queryApartmentsNearbyAddress = async (
+  address: string,
+  city: string,
+  distance: number = 500,
+  limit: number = 50,
+): Promise<{
+  coordinates: number[];
+  apartments: IApartment[];
+}> => {
+  const { data } = await gqlClient.query({
+    query: gql`
+      query($address: String!, $city: String!, $distance: Int!, $limit: Int!){
+        queryApartmentsNearbyAddress(address: $address, city:$city, distance:$distance, limit:$limit){
+          coordinates
+          apartments {
+            ${apartmentDefaultSchemas}
+          }
+        }
+      }
+    `,
+    variables: {
+      address,
+      city,
+      distance,
+      limit,
+    },
+  });
+  return data.queryApartmentsNearbyAddress;
 };

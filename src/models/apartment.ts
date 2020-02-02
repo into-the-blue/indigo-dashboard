@@ -2,7 +2,11 @@ import { Reducer } from 'redux';
 import { Effect } from 'dva';
 import {} from '@/utils';
 import { IMetroStationClient, IApartment } from '@/types';
-import { queryAllMetroStations, queryApartmentsNearbyMetroStation } from '@/services/apartments';
+import {
+  queryAllMetroStations,
+  queryApartmentsNearbyMetroStation,
+  queryApartmentsNearbyAddress,
+} from '@/services/apartments';
 import { ConnectState } from './connect.d';
 import { next, XENO_EVENT } from '@/utils/xeno';
 import { message } from 'antd';
@@ -17,6 +21,7 @@ export interface TempalteModel {
   effects: {
     queryMetroStations: Effect;
     queryApartmentsNearbyStation: Effect;
+    queryApartmentsNearbyAddress: Effect;
   };
   reducers: {
     setState: Reducer<ApartmentState>;
@@ -82,12 +87,55 @@ const Model: TempalteModel = {
         });
       } catch (err) {
         console.warn(err.message);
+        // yield put({
+        //   type: 'setState',
+        //   payload: {
+        //     apartmentsOnMap: [],
+        //   },
+        // });
+      } finally {
+        done();
+      }
+    },
+
+    *queryApartmentsNearbyAddress(
+      { payload: { address, city, distance = 500, limit = 50 } },
+      { call, put },
+    ) {
+      const done = message.loading('Loading...');
+      try {
+        next(XENO_EVENT.CLEAN_MARKER, {
+          type: 'apartment',
+          apartment: [],
+        });
+        const { coordinates, apartments } = yield call(
+          queryApartmentsNearbyAddress,
+          address,
+          city,
+          distance,
+          limit,
+        );
+        // console.warn(apartments);
+        message.success(`Found ${apartments.length} apartments nearby ${coordinates.join(',')}`);
+        next(XENO_EVENT.ADD_MARKER, {
+          type: 'apartment',
+          apartment: apartments,
+        });
         yield put({
           type: 'setState',
           payload: {
-            apartmentsOnMap: [],
+            apartmentsOnMap: apartments,
           },
         });
+      } catch (err) {
+        console.warn(err.message);
+        message.error(err.message);
+        // yield put({
+        //   type: 'setState',
+        //   payload: {
+        //     apartmentsOnMap: [],
+        //   },
+        // });
       } finally {
         done();
       }
